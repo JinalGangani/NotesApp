@@ -1,6 +1,6 @@
 # NotesApp (College Work)
 
-###  Implement a Notes App using FileManager
+###  Implement a Notes App to Store File
 
 ## Functionality:
 
