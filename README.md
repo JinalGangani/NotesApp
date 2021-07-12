@@ -11,7 +11,7 @@
 
 ### Gif View:
 
-![5g794y](https://user-images.githubusercontent.com/81614235/125253532-28037400-e317-11eb-94fe-77d36c19fae1.gif)
+
 
 ### Images:
 
