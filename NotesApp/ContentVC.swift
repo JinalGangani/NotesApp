@@ -1,0 +1,113 @@
+//
+//  ContentVC.swift
+//  NotesApp
+//
+//  Created by JinalGangani on 11/07/21.
+//
+
+import UIKit
+
+class ContentVC: UIViewController {
+    
+    var openFile = ""
+    
+    private let myTextField:UITextField = {
+        let textfield = UITextField()
+        textfield.placeholder = "Add Notes"
+        textfield.textAlignment = .center
+        textfield.borderStyle = .roundedRect
+        textfield.backgroundColor = .systemGray5
+        textfield.layer.borderWidth = 1
+        return textfield
+    }()
+    
+    private let myTextView:UITextView = {
+        let textview = UITextView()
+        textview.textAlignment = .center
+        textview.backgroundColor = .systemGray5
+        textview.layer.cornerRadius = 6
+        textview.layer.borderWidth = 1
+        return textview
+    }()
+    
+    private let SaveButton:UIButton = {
+        let button = UIButton()
+        button.setTitle("Save", for: .normal)
+        button.addTarget(self, action: #selector(SaveButtonTapped), for: .touchUpInside)
+        button.backgroundColor = .systemPink
+        button.layer.cornerRadius = 6
+        button.layer.borderWidth = 1
+        return button
+    }()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .systemBackground
+        
+        view.addSubview(myTextField)
+        view.addSubview(myTextView)
+        view.addSubview(SaveButton)
+        
+        if openFile != ""{
+            myTextField.text = openFile.components(separatedBy: ".").first
+            myTextField.isEnabled = false
+            
+            let filepath = getDocDir().appendingPathComponent(openFile)
+            
+            do{
+                let content = try String(contentsOf: filepath)
+                myTextView.text = content
+            }
+            catch
+            {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let vw=view.frame.width
+        myTextField.frame = CGRect(x: 20, y: 150, width:vw - 40, height: 40)
+        myTextView.frame = CGRect(x: 20, y: 205, width: vw - 40, height: 100)
+        SaveButton.frame = CGRect(x: 20, y: 420, width: vw - 40, height: 60)
+    }
+    
+    @objc private func SaveButtonTapped()
+    {
+        let name = myTextField.text!
+        let content = myTextView.text!
+        
+        let filepath = getDocDir().appendingPathComponent("\(name).txt")
+        do
+        {
+            try content.write(to: filepath, atomically: true, encoding: .utf8)
+            
+            let fetchContent = try String(contentsOf: filepath)
+            print("saved: \(fetchContent)")
+            
+            myTextField.text = ""
+            myTextView.text = ""
+            
+            let alert = UIAlertController(title: "success", message: "File Created Sucessfully", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Done", style: .cancel))
+            present(alert, animated: true)
+        }
+        catch{
+            print(error.localizedDescription)
+        }
+       
+    }
+    
+    private func getDocDir() -> URL{
+        let  paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        
+        print("Doc Dir: \(paths[0])")
+        return paths[0]
+    }
+    
+    
+
+}
